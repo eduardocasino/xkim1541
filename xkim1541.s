@@ -33,6 +33,10 @@ D1T2H           = $1704         ; 1T INTERVAL TIMER ON THE 6530
 D64TH           = $1706         ; 64T INTERVAL TIMER ON THE 6530
 D1ICR           = $1707         ; 6530 INTERVAL TIMER STATUS REGISTER
 
+                ; KIM-1 Zero Page locations
+                ;
+PREG            = $f1           ; Current Status Register
+
                 ; KIM-1 routines in ROM
                 ;
 CRLF            = $1e2f	        ; print CR/LF
@@ -145,6 +149,7 @@ RSEINIT:        cld
                 sta     PADD
 
                 and     #0
+                sta     PREG
                 sta     FA
                 sta     SA
                 sta     STATUS
