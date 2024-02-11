@@ -1,0 +1,10 @@
+MEMORY {
+    ZP:         start = $0000, size = $FF;
+    RRIOT_RAM:  start = $1780, size = $80,   file = "";
+    ROM:        start = %%OFFSET%%, size = $1000;
+}
+SEGMENTS {
+    zp_iec:     load = ZP,          type = zp,  start = %%ZPINIT%%;
+    kim_ram:    load = RRIOT_RAM,   type = bss,  start = $17f5;
+    code:       load = ROM,         type = ro;
+}
