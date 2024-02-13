@@ -36,4 +36,6 @@ This generates the romable code (binary and Intel hex files) and an include file
 
 [Here there is an example integration](https://github.com/eduardocasino/xKIM/tree/IEC_support) with Corsham's xKIM monitor. 
 
+[Another example with Microsoft's KB9 Basic](https://github.com/eduardocasino/msbasic/tree/IEC_support).
+
 
