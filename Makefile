@@ -1,5 +1,11 @@
+# OFFSET  : Where to load. 
+# ZPINIT  : first ZP address for xkim1541 use. $DD is the first
+#           unused page 0 location if using KB9
+# BSSINIT : Start address for xkim1541 variables in the application RAM
+#
 OFFSET = F000
-ZPINIT = D6
+ZPINIT = DD
+BSSINIT= 17DD
 
 TARGETS = xkim1541.hex iecproto.inc
 
@@ -15,7 +21,7 @@ xkim1541.bin xkim1541.map: xkim1541.o xkim1541.cfg
 	ld65 -C $(basename $<).cfg -o $@ -vm -m $(basename $<).map $<
 
 xkim1541.cfg: xkim1541.cfg.in Makefile
-	sed 's/%%OFFSET%%/$$$(OFFSET)/; s/%%ZPINIT%%/$$$(ZPINIT)/' $< > $@
+	sed 's/%%OFFSET%%/$$$(OFFSET)/; s/%%ZPINIT%%/$$$(ZPINIT)/ ; s/%%BSSINIT%%/$$$(BSSINIT)/' $< > $@
 
 xkim1541.o: xkim1541.inc
 

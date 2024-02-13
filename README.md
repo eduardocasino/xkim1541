@@ -21,7 +21,11 @@ https://github.com/netzherpes/KIM1541
 
 ### Building
 
-By default, the makefile places the code at 0xF000 and the zero page variables starting at 0xD6. Modify the OFFSET and ZPINIT variables if you need a different setup.
+By default, the makefile places the code at 0xF000, the zero page variables starting at 0xDD and the bss segment at 0x17DD.
+
+Those values are to allow integration with Corsham's xKIM (which occupies the 4K space at 0xE000) and KB9, which uses all zero page addresses from 0X00 to 0XDC.
+
+Modify the OFFSET, ZPINIT and BSSINIT variables if you need a different setup.
 
 To build, just use make:
 

@@ -47,37 +47,44 @@ OUTCH           = $1ea0	        ; print A to TTY
 
                 ; ZERO PAGE ADDRESSES FOR IEC ROUTINES
                 ;
+                ; NOTE: Keep zp usage low to allow integration with KB9
+                ;
                 .segment        "zp_iec" : zeropage
 
         .ifdef  RVS_TEST
 FLNFLG:         .res    1       ; (byte) First line flag
-        .endif
-SAVEY:          .res    1       ; (byte) Save Y register
 PRNL:           .res    1       ; (byte) Address of string to print (low)
 PRNH:           .res    1       ; (byte) Address of string to print (high)
-MSGFLG:         .res    1       ; (byte) OS MESSAGE FLAG
+        .endif
+
 STATUS:         .res    1       ; (byte) I/O OPERATION STATUS BYTE
 C3P0:           .res    1       ; (byte) IEEE BUFFERED CHAR FLAG
 BSOUR:          .res    1       ; (byte) CHAR BUFFER FOR IEEE
 R2D2:           .res    1       ; (byte) SERIAL BUS USAGE
 BSOUR1:         .res    1       ; (byte) TEMP USED BY SERIAL ROUTINE
 COUNT:          .res    1       ; (byte) TEMP USED BY SERIAL ROUTINE
-FNLEN:          .res    1       ; (byte) FILENAME LENGTH
 FNADR:          .res    2       ; (word) FILENAME ADDRESS
-FA:             .res    1       ; (byte) FILE PRIMARY ADDRESS
-SA:             .res    1       ; (byte) FILE SECONDARY ADDRESS
 DSAL:           .res    1       ; (byte) START ADDR LOW BYTE FOR SAVE ROUTINE
 DSAH:           .res    1       ; (byte) START ADDR HIGH BYTE FOR SAVE ROUTINE
 DEAL:           .res    1       ; (byte) END ADDRESS LOW BYTE
 DEAH:           .res    1       ; (byte) END ADDRESS HIGH BYTE
-MEMUSS:         .res    2       ; (word) USER SPECIFIED FILE LOAD ADDRESS
 VERCK:          .res    1       ; (byte) LOAD OR VERIFY FLAG
-
-PRNUM:          .res    2       ; (word) BCDPRN: 16-bit number to print 
 
                 .assert * <= $EF, error, "Page zero overflow!"
 
-.exportzp       MSGFLG, STATUS, FA, SA, DSAL, DSAH, DEAL, DEAH, MEMUSS, VERCK
+                ; Locations used by xkim1541 for variables
+                ;
+                .segment        "bss"
+
+MSGFLG:         .res    1       ; (byte) OS MESSAGE FLAG
+FA:             .res    1       ; (byte) FILE PRIMARY ADDRESS
+SA:             .res    1       ; (byte) FILE SECONDARY ADDRESS
+FNLEN:          .res    1       ; (byte) FILENAME LENGTH
+MEMUSS:         .res    2       ; (word) USER SPECIFIED FILE LOAD ADDRESS
+SAVEY:          .res    1       ; (byte) Save Y register
+PRNUM:          .res    2       ; (word) BCDPRN: 16-bit number to print 
+
+                .assert * <= $17E7, error, "BSS segment overflow!"
 
                 ;LOCATIONS USED BY THE NATIVE KIM-1 TAPE LOAD AND SAVE ROUTINES.
                 ;I'LL USE THESE FOR DISK LOAD AND SAVE FOR CONSISTENCY OF USER
@@ -96,6 +103,15 @@ ID:             .res    1       ;  (byte) $17F9 KIM-1 TAPE ID. USE AS FILENAME
                 ; Jump table. Add entries to new functions at the end
                 ;
 SEINIT:         jmp     RSEINIT         ; Init serial bus
+SETSAD:         jmp     RSETSAD         ; Set Start ADdress
+SETEAD:         jmp     RSETEAD         ; Set End ADdress
+SETMUSS:        jmp     RSETMUSS        ; Set User Specified Load Address
+SETVRCK:        jmp     RSETVRCK        ; Set Verify Flag
+SETFA:          jmp     RSETFA          ; Set Frive Number
+SETSA:          jmp     RSETSA          ; Set Secondary Address
+GETSTAT:        jmp     RGETSTAT        ; Get Status Byte
+SETMSGF:        jmp     RSETMSGF        ; Set Message Flag
+GETMSGF:        jmp     RGETMSGF        ; Get message Flag
 DSKCMD:         jmp     RDSKCMD         ; Send a command to the disk
 DIRLIST:        jmp     RDIRLIST        ; Directory listing
 FREAD:          jmp     RFREAD          ; Read from file
@@ -103,7 +119,8 @@ FWRITE:         jmp     RFWRITE         ; Write to file
 
 BCDPRN:         jmp     RBCDPRN         ; 16-bit BCD print
 
-.export         SEINIT, DSKCMD, DIRLIST, FREAD, FWRITE
+.export         SEINIT, SETSAD, SETEAD, SETMUSS, SETVRCK, SETFA, SETSA
+.export         GETSTAT, SETMSGF, GETMSGF, DSKCMD, DIRLIST, FREAD, FWRITE
 
 
                 ; Set Reverse On and Reverse Off mode
@@ -160,6 +177,86 @@ RSEINIT:        cld
                 clc
                 rts
 
+RSETSAD:        ; Set Start ADdress
+                ;
+                ; Parameters:
+                ;       A : Address low
+                ;       Y : Address high
+                ;
+                sta     DSAL
+                sty     DSAH
+                rts
+
+RSETEAD:        ; Set End ADdress
+                ;
+                ; Parameters:
+                ;       A : Address low
+                ;       Y : Address high
+                ;
+                sta     DEAL
+                sty     DEAH
+                rts
+
+RSETMUSS:        ; Set User Specified Load Address
+                ;
+                ; Parameters:
+                ;       A : Address low
+                ;       Y : Address high
+                ;
+                sta     MEMUSS
+                sty     MEMUSS+1
+                rts
+
+RSETVRCK:       ; Set Verify Flag
+                ;
+                ; Parameters:
+                ;       A : Value
+                ;
+                sta     VERCK
+                rts
+
+RSETFA:         ; Set Drive Number 
+                ;
+                ; Parameters:
+                ;       A : Drive number
+                ;
+                sta     FA
+                rts
+
+RSETSA:         ; Set Secondary ADdress 
+                ;
+                ; Parameters:
+                ;       A : Secondary Address
+                ;
+                sta     SA
+                rts
+
+RGETSTAT:       ; Get Status Byte
+                ;
+                ; Parameters: None
+                ;
+                ; Returns status byte in A
+                ; 
+                lda     STATUS
+                rts
+
+RSETMSGF:       ; Set Message Flag
+                ;
+                ; Parameters:
+                ;       A : Value
+                ;
+                sta     MSGFLG
+                rts
+
+RGETMSGF:       ; Get Message Flag
+                ;
+                ; Parameters: None
+                ;
+                ; Returns flag in A
+                ; 
+                lda     MSGFLG
+                rts
+
                 ; Send a command to the disk
                 ;
                 ; Parameters:
@@ -183,9 +280,8 @@ RDSKCMD:        jsr     SETNAM
 
                 ; Directory listing
                 ;
-                ; Parameters: None
+                ; Parameters:
                 ;
-                ; Expected zero page variables:
                 ;       FA:     Drive number. If 0, set DEFDRIVE
                 ; 
 RDIRLIST:       lda     #1              ; Filename length
@@ -268,7 +364,6 @@ DIRNAME:        .byte   "$"
                 ;       X : Address of file name (low)
                 ;       Y : Address of file name (high)
                 ;
-                ; Expected zero page variables:
                 ;       MEMUSS: User load address for SA<>0
                 ;       VERCK:  Verify flag
                 ;       FA:     Drive number. If 0, set DEFDRIVE
@@ -371,7 +466,6 @@ RFREAD:         jsr     SETNAM
                 ;       X : Address of file name (low)
                 ;       Y : Address of file name (high)
                 ;
-                ; Expected zero page variables:
                 ;       FA:     Drive number. If 0, set DEFDRIVE
                 ;       SA:     Secondary address
                 ;       DSAL-DSAH : Start address

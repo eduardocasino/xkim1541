@@ -5,6 +5,7 @@ MEMORY {
 }
 SEGMENTS {
     zp_iec:     load = ZP,          type = zp,  start = %%ZPINIT%%;
-    kim_ram:    load = RRIOT_RAM,   type = bss,  start = $17f5;
+    bss:        load = RRIOT_RAM,   type = bss, start = %%BSSINIT%%;
+    kim_ram:    load = RRIOT_RAM,   type = bss, start = $17f5;
     code:       load = ROM,         type = ro;
 }
