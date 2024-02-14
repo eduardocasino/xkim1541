@@ -1,6 +1,6 @@
 MEMORY {
     ZP:         start = $0000, size = $FF;
-    RRIOT_RAM:  start = $1780, size = $80,   file = "";
+    RRIOT_RAM:  start = $1780, size = $80;
     ROM:        start = %%OFFSET%%, size = $1000;
 }
 SEGMENTS {
