@@ -299,7 +299,6 @@ RDIRLIST:       lda     #1              ; Filename length
                 jsr     OPENI           ; Open the directory
                 ; bcs     @ERROR        ; quit if OPEN failed
                                         ; OPENI foes not return on error
-
                 ; Open channel for input
                 ;
                 lda     FA
@@ -568,7 +567,7 @@ SETNAM:         sta     FNLEN
                 ;
 SETDRV:         lda     FA              ; Get drive number
                 bne     SETDRV1         ; Set default if unset
-                lda     DEFDRIVE
+                lda     #DEFDRIVE
 SETDRV1:        sta     FA
                 rts
 
@@ -585,7 +584,6 @@ CHI01:          jmp     ACPTR
 
 OPENI:          lda     SA
                 bmi     OP175           ; NO SA...DONE
-       
                 ldy     FNLEN
                 beq     OP175           ; NO FILE NAME...DONE
                 ;
