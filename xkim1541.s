@@ -25,25 +25,25 @@
                 ; CONVERTED TO USE 6530 LOCATIONS FOR TIMER AND IO TO RUN ON
                 ; A KIM-1.
                 ;
-PAD             = $1700         ; PERIPHERAL DATA REGISTER A ON KIM-1
-PADD            = $1701         ; PERIPHERAL DATA DIR REGISTER A ON KIM-1
-D2PRA           = $1700         ; PERIPHERAL DATA REGISTER A ON C64
-D2DDRA          = $1701         ; PERIPHERAL DATA DIR REGISTER A ON C64
-D1T2H           = $1704         ; 1T INTERVAL TIMER ON THE 6530
-D64TH           = $1706         ; 64T INTERVAL TIMER ON THE 6530
-D1ICR           = $1707         ; 6530 INTERVAL TIMER STATUS REGISTER
+PAD             := $1700        ; PERIPHERAL DATA REGISTER A ON KIM-1
+PADD            := $1701        ; PERIPHERAL DATA DIR REGISTER A ON KIM-1
+D2PRA           := $1700        ; PERIPHERAL DATA REGISTER A ON C64
+D2DDRA          := $1701        ; PERIPHERAL DATA DIR REGISTER A ON C64
+D1T2H           := $1704        ; 1T INTERVAL TIMER ON THE 6530
+D64TH           := $1706        ; 64T INTERVAL TIMER ON THE 6530
+D1ICR           := $1707        ; 6530 INTERVAL TIMER STATUS REGISTER
 
                 ; KIM-1 Zero Page locations
                 ;
-PREG            = $f1           ; Current Status Register
+PREG            := $f1          ; Current Status Register
 
                 ; KIM-1 routines in ROM
                 ;
-CRLF            = $1e2f	        ; print CR/LF
-PRTBYT          = $1e3b	        ; print A as two hex digits
-GETCH           = $1e5a	        ; get a key from tty into A
-OUTSP           = $1e9e	        ; print a space
-OUTCH           = $1ea0	        ; print A to TTY
+CRLF            := $1e2f        ; print CR/LF
+PRTBYT          := $1e3b        ; print A as two hex digits
+GETCH           := $1e5a        ; get a key from tty into A
+OUTSP           := $1e9e        ; print a space
+OUTCH           := $1ea0        ; print A to TTY
 
                 ; ZERO PAGE ADDRESSES FOR IEC ROUTINES
                 ;
