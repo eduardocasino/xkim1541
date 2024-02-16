@@ -151,7 +151,7 @@ PUTS:           php
                 rts
 
 ONSEQ:           .byte $1b, "[7m", 0
-OFFSEQ:          .byte $1b, "[0m", 0
+OFFSEQ:          .byte $1b, "[27m", 0
         .endif
 
                 ; Init serial bus
@@ -320,14 +320,16 @@ RDIRLIST:       lda     #1              ; Filename length
                 jsr     @GETBYTE        ; get high byte of basic line number
                 sta     PRNUM+1
                 jsr     BCDPRN          ; print basic line number
-                jsr     OUTSP           ; print a space first 
+                lda     #' '            ; print a space first 
         .ifdef  RVS_TEST               
+                jsr     OUTCH
                 lda     FLNFLG          ; First line?
-                beq     @CHAR           ; No, continue
+                beq     @CHAR2          ; No, continue
                 jsr     RVSON           ; Yes, set reverse video on
+                jmp     @CHAR2          ; Skip next line
         .endif
 @CHAR:          jsr     OUTCH           ; print character
-                jsr     @GETBYTE
+@CHAR2:         jsr     @GETBYTE
                 bne     @CHAR           ; continue until end of line
 
                 jsr     CRLF
