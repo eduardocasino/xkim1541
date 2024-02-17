@@ -371,6 +371,7 @@ DIRNAME:        .byte   "$"
                 ;       SA:     Secondary address
                 ; 
 RFREAD:         jsr     SETNAM
+                jsr     SETDRV
 
                 ldy     FNLEN           ; Must have file name
                 bne     @OPEN           ; Yes...OK
@@ -473,6 +474,7 @@ RFREAD:         jsr     SETNAM
                 ;       DEAL-DEAH : End address
                 ; 
 RFWRITE:        jsr     SETNAM
+                jsr     SETDRV
 
                 lda     #$61
                 sta     SA
