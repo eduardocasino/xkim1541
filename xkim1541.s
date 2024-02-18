@@ -18,6 +18,7 @@
 ;  TODO:
 ;    Recover original cassette-like fiunctions by Dave McMurtrie
 ;
+RVS_TEST        = 1
 
                 .include "xkim1541.inc"
 
@@ -51,7 +52,7 @@ OUTCH           := $1ea0        ; print A to TTY
                 ;
                 .segment        "zp_iec" : zeropage
 
-        .ifdef  RVS_TEST
+        .if     RVS_TEST = 1
 FLNFLG:         .res    1       ; (byte) First line flag
 PRNL:           .res    1       ; (byte) Address of string to print (low)
 PRNH:           .res    1       ; (byte) Address of string to print (high)
@@ -125,7 +126,7 @@ BCDPRN:         jmp     RBCDPRN         ; 16-bit BCD print
 
                 ; Set Reverse On and Reverse Off mode
                 ;
-        .ifdef  RVS_TEST   
+        .if     RVS_TEST = 1   
 RVSON:          lda     #<ONSEQ
                 sta     PRNL
                 lda     #>ONSEQ
@@ -285,7 +286,7 @@ RDSKCMD:        jsr     SETNAM
                 ;       FA:     Drive number. If 0, set DEFDRIVE
                 ; 
 RDIRLIST:       lda     #1              ; Filename length
-        .ifdef  RVS_TEST
+        .if     RVS_TEST = 1
                 sta     FLNFLG          ; While here, set first line flag
         .endif
                 ldx     #<DIRNAME       ; Pointer to file name ("$")
@@ -321,7 +322,7 @@ RDIRLIST:       lda     #1              ; Filename length
                 sta     PRNUM+1
                 jsr     BCDPRN          ; print basic line number
                 lda     #' '            ; print a space first 
-        .ifdef  RVS_TEST               
+        .if     RVS_TEST = 1               
                 jsr     OUTCH
                 lda     FLNFLG          ; First line?
                 beq     @CHAR2          ; No, continue
@@ -334,7 +335,7 @@ RDIRLIST:       lda     #1              ; Filename length
 
                 jsr     CRLF
 
-        .ifdef  RVS_TEST
+        .if     RVS_TEST = 1
                 lda     FLNFLG          ; First line?
                 beq     @NEXT           ; No, continue
                 jsr     RVSOFF          ; Yes, set reverse video off
