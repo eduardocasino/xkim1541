@@ -6,9 +6,12 @@ Based on the original work by Dave McMurtrie <dave@commodore.international>, whi
 
 Modified by Netzherpes <<webdoktor@netzherpes.de>> to start code at $A000 and compile with CC65.
 
-Modified 30 Jan 2024 by Eduardo Casino <<mail@eduardocasino.es>>:
+Modified 18 Feb 2024 by Eduardo Casino <<mail@eduardocasino.es>>:
+
 * General cleanup
-* Implement dir listing, full file names, send commands and msg printing
+* Adjust ACPTR timeout to avoid false EOI detections
+* Optimize ZP usage
+* Implement dir listing, full file names, file verifying, send commands, msg printing
            
 Dir listing and send command adapted from https://codebase64.org/
 
