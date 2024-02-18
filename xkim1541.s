@@ -469,7 +469,6 @@ RFREAD:         jsr     SETNAM
                 ;       Y : Address of file name (high)
                 ;
                 ;       FA:     Drive number. If 0, set DEFDRIVE
-                ;       SA:     Secondary address
                 ;       DSAL-DSAH : Start address
                 ;       DEAL-DEAH : End address
                 ; 
@@ -509,9 +508,19 @@ SV30:           jsr     CMPSTE          ; Compare start to end
 SV40:           jsr     INCSAL          ; Increment current addr.
                 bne     SV30
 SV50:           jsr     UNLSN
-                jsr     CLSEI
+CLSEI:          bit     SA
+                bmi     CLSEI2
+                lda     FA
+                jsr     LISTN
+                lda     SA
+                and     #$EF
+                ora     #$E0
+                jsr     SECND
                 ;
-                jmp     CUNLSN
+CUNLSN:         jsr     UNLSN           ; ENTRY FOR OPENI
+                ;
+CLSEI2:         clc
+                rts
                 ;
                 ; Compare start and end load/save
                 ; addresses.  Subroutine called by
@@ -627,20 +636,6 @@ OP40:           lda     (FNADR),Y
                 ;
 OP45:           jmp     CUNLSN          ; jsr UNLSN: clc: rts
 
-CLSEI:          bit     SA
-                bmi     CLSEI2
-                lda     FA
-                jsr     LISTN
-                lda     SA
-                and     #$EF
-                ora     #$E0
-                jsr     SECND
-                ;
-CUNLSN:         jsr     UNLSN           ; ENTRY FOR OPENI
-                ;
-CLSEI2:         clc
-                rts
-                ;
 LDEXIT:         clc                     ; GOOD EXIT
                 ;
                 ; SET UP END LOAD ADDRESS
