@@ -52,19 +52,11 @@ OUTCH           := $1ea0        ; print A to TTY
                 ;
                 .segment        "zp_iec" : zeropage
 
-        .if     RVS_TEST = 1
-PRNL:           .res    1       ; (byte) Address of string to print (low)
-PRNH:           .res    1       ; (byte) Address of string to print (high)
-        .endif
-
-
-
 FNADR:          .res    2       ; (word) FILENAME ADDRESS
 DSAL:           .res    1       ; (byte) START ADDR LOW BYTE FOR SAVE ROUTINE
 DSAH:           .res    1       ; (byte) START ADDR HIGH BYTE FOR SAVE ROUTINE
 DEAL:           .res    1       ; (byte) END ADDRESS LOW BYTE
 DEAH:           .res    1       ; (byte) END ADDRESS HIGH BYTE
-
 
                 .assert * <= $EF, error, "Page zero overflow!"
 
@@ -130,32 +122,11 @@ BCDPRN:         jmp     RBCDPRN         ; 16-bit BCD print
                 ; Set Reverse On and Reverse Off mode
                 ;
         .if     RVS_TEST = 1   
-RVSON:          lda     #<ONSEQ
-                sta     PRNL
-                lda     #>ONSEQ
-                sta     PRNH
-                jmp     PUTS
+RVSON:          ldy     #ONSEQ-MS1
+                jmp     MSG
 
-RVSOFF:         lda     #<OFFSEQ
-                sta     PRNL
-                lda     #>OFFSEQ
-                sta     PRNH
-
-PUTS:           php
-                clc
-                ldy     0
-@LOOP:          lda     (PRNL), y
-                beq     @DONE
-                sty     SAVEY
-                jsr     OUTCH
-                ldy     SAVEY
-                iny
-                jmp     @LOOP
-@DONE:          plp
-                rts
-
-ONSEQ:           .byte $1b, "[7m", 0
-OFFSEQ:          .byte $1b, "[27m", 0
+RVSOFF:         ldy     #OFFSEQ-MS1
+                jmp     MSG
         .endif
 
                 ; Init serial bus
@@ -1047,5 +1018,7 @@ MS11:           .byte   $0d, $0a, "SAVING ", 0
 MS21:           .byte   $0d, $0a, "VERIFYING AT 0x", 0
 MS17:           .byte   $0d, $0a, "FOUND ", 0
 MS18:           .byte   $0d, $0a, "OK", $0d, $0a, 0
+ONSEQ:          .byte   $1b, "[7m", 0
+OFFSEQ:         .byte   $1b, "[27m", 0
 
                 .end
