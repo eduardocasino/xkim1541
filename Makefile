@@ -4,8 +4,8 @@
 # BSSINIT : Start address for xkim1541 variables in the application RAM
 #
 OFFSET = F000
-ZPINIT = DD
-BSSINIT= 17DD
+ZPINIT = E9
+BSSINIT= 17D6
 
 TARGETS = xkim1541.hex iecproto.inc
 
