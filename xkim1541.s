@@ -53,23 +53,18 @@ OUTCH           := $1ea0        ; print A to TTY
                 .segment        "zp_iec" : zeropage
 
         .if     RVS_TEST = 1
-FLNFLG:         .res    1       ; (byte) First line flag
 PRNL:           .res    1       ; (byte) Address of string to print (low)
 PRNH:           .res    1       ; (byte) Address of string to print (high)
         .endif
 
-STATUS:         .res    1       ; (byte) I/O OPERATION STATUS BYTE
-C3P0:           .res    1       ; (byte) IEEE BUFFERED CHAR FLAG
-BSOUR:          .res    1       ; (byte) CHAR BUFFER FOR IEEE
-R2D2:           .res    1       ; (byte) SERIAL BUS USAGE
-BSOUR1:         .res    1       ; (byte) TEMP USED BY SERIAL ROUTINE
-COUNT:          .res    1       ; (byte) TEMP USED BY SERIAL ROUTINE
+
+
 FNADR:          .res    2       ; (word) FILENAME ADDRESS
 DSAL:           .res    1       ; (byte) START ADDR LOW BYTE FOR SAVE ROUTINE
 DSAH:           .res    1       ; (byte) START ADDR HIGH BYTE FOR SAVE ROUTINE
 DEAL:           .res    1       ; (byte) END ADDRESS LOW BYTE
 DEAH:           .res    1       ; (byte) END ADDRESS HIGH BYTE
-VERCK:          .res    1       ; (byte) LOAD OR VERIFY FLAG
+
 
                 .assert * <= $EF, error, "Page zero overflow!"
 
@@ -77,13 +72,21 @@ VERCK:          .res    1       ; (byte) LOAD OR VERIFY FLAG
                 ;
                 .segment        "bss"
 
+FLNFLG:         .res    1       ; (byte) First line flag
+STATUS:         .res    1       ; (byte) I/O OPERATION STATUS BYTE
 MSGFLG:         .res    1       ; (byte) OS MESSAGE FLAG
+C3P0:           .res    1       ; (byte) IEEE BUFFERED CHAR FLAG
+BSOUR:          .res    1       ; (byte) CHAR BUFFER FOR IEEE
+R2D2:           .res    1       ; (byte) SERIAL BUS USAGE
+BSOUR1:         .res    1       ; (byte) TEMP USED BY SERIAL ROUTINE
+COUNT:          .res    1       ; (byte) TEMP USED BY SERIAL ROUTINE
 FA:             .res    1       ; (byte) FILE PRIMARY ADDRESS
 SA:             .res    1       ; (byte) FILE SECONDARY ADDRESS
 FNLEN:          .res    1       ; (byte) FILENAME LENGTH
 MEMUSS:         .res    2       ; (word) USER SPECIFIED FILE LOAD ADDRESS
 SAVEY:          .res    1       ; (byte) Save Y register
 PRNUM:          .res    2       ; (word) BCDPRN: 16-bit number to print 
+VERCK:          .res    1       ; (byte) LOAD OR VERIFY FLAG
 
                 .assert * <= $17E7, error, "BSS segment overflow!"
 
