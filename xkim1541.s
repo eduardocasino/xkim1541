@@ -144,7 +144,6 @@ RSEINIT:        cld
                 sta     PREG
                 sta     FA
                 sta     SA
-                sta     STATUS
                 sta     MSGFLG
                 sta     C3P0
                 sta     R2D2
