@@ -103,6 +103,7 @@ SETSAD:         jmp     RSETSAD         ; Set Start ADdress
 SETEAD:         jmp     RSETEAD         ; Set End ADdress
 SETMUSS:        jmp     RSETMUSS        ; Set User Specified Load Address
 SETVRCK:        jmp     RSETVRCK        ; Set Verify Flag
+GETVRCK:        jmp     RGETVRCK        ; Get Verify Flag
 SETFA:          jmp     RSETFA          ; Set Frive Number
 SETSA:          jmp     RSETSA          ; Set Secondary Address
 GETSTAT:        jmp     RGETSTAT        ; Get Status Byte
@@ -115,7 +116,7 @@ FWRITE:         jmp     RFWRITE         ; Write to file
 
 BCDPRN:         jmp     RBCDPRN         ; 16-bit BCD print
 
-.export         SEINIT, SETSAD, SETEAD, SETMUSS, SETVRCK, SETFA, SETSA
+.export         SEINIT, SETSAD, SETEAD, SETMUSS, SETVRCK, GETVRCK, SETFA, SETSA
 .export         GETSTAT, SETMSGF, GETMSGF, DSKCMD, DIRLIST, FREAD, FWRITE
 
 
@@ -187,6 +188,11 @@ RSETVRCK:       ; Set Verify Flag
                 ;       A : Value
                 ;
                 sta     VERCK
+                rts
+
+RGETVRCK:       ; Get Verify Flag
+                ;
+                lda     VERCK
                 rts
 
 RSETFA:         ; Set Drive Number 
@@ -385,6 +391,7 @@ RFREAD:         jsr     SETNAM
                 jsr     PRTBYT
                 lda     DEAL
                 jsr     PRTBYT
+                jsr     CRLF
                 
                 ;
 @TMLOOP:        lda     #$FD            ; Mask off timeout
@@ -1015,8 +1022,6 @@ MS6:            .byte   "FOR ", 0
 MS10:           .byte   $0d, $0a, "LOADING AT 0x", 0
 MS11:           .byte   $0d, $0a, "SAVING ", 0
 MS21:           .byte   $0d, $0a, "VERIFYING AT 0x", 0
-MS17:           .byte   $0d, $0a, "FOUND ", 0
-MS18:           .byte   $0d, $0a, "OK", $0d, $0a, 0
         .if     RVS_TEST = 1
 ONSEQ:          .byte   $1b, "[7m", 0
 OFFSEQ:         .byte   $1b, "[27m", 0
