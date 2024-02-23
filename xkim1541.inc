@@ -1,5 +1,7 @@
 DEFDRIVE        = $08           ; Default drive number
+
 SPERR           = $10           ; Second Pass error (verify error)
+EOI             = $40
 
 FPRNMSG         = %10000000
 FPRNERR         = %01000000
