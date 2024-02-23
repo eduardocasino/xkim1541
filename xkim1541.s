@@ -670,7 +670,8 @@ SAVING:         lda     MSGFLG
                 bpl     SV115           ; No print
                 ldy     #MS11-MS1       ; 'SAVING'
                 jsr     MSG
-                jmp     OUTFN           ; <FILE NAME>                ;
+                jsr     OUTFN           ; <FILE NAME>                ;
+                jmp     CRLF
 
 READST:         lda     STATUS
 UDST:           ora     STATUS
