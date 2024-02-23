@@ -867,7 +867,7 @@ ACP00A:         jsr     DEBPIA          ; WAIT FOR CLOCK HIGH
                 bpl     ACP00A
                 ;
 EOIACP:
-                lda     #$05            ; SET TIMER 2 FOR 256+64US
+                lda     #$04            ; SET TIMER 2 FOR 256
                 sta     D64TH
                 ; lda   #TIMRB          ; XXX NOT NEEDED ON KIM-1
                 ; sta   D1CRB
