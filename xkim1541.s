@@ -1018,7 +1018,8 @@ MS11:           .byte   $0d, $0a, "SAVING ", 0
 MS21:           .byte   $0d, $0a, "VERIFYING AT 0x", 0
 MS17:           .byte   $0d, $0a, "FOUND ", 0
 MS18:           .byte   $0d, $0a, "OK", $0d, $0a, 0
+        .if     RVS_TEST = 1
 ONSEQ:          .byte   $1b, "[7m", 0
 OFFSEQ:         .byte   $1b, "[27m", 0
-
+        .endif
                 .end
