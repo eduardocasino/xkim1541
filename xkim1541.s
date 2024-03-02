@@ -767,14 +767,13 @@ ISRCLK:         jsr     CLKHI           ; CLOCK HI
                 sta     D2PRA
                 dec     COUNT
                 bne     ISR01
-                lda     #$04            ; SET TIMER FOR 1MS
-                sta     D1T2H
+                lda     #$10            ; SET TIMER FOR 1MS
+                sta     D64TH
                 ; lda #TIMRB            ; TRIGGER TIMER ; XXX NOT NEEDED ON KIM-1
                 ; sta D1CRB
                 ; lda D1ICR             ; CLEAR THE TIMER FLAGS<<<<<<<<<<<<<
-ISR04:          lda     D1ICR
-                and     #$02
-                bne     FRMERR
+ISR04:          bit     D1ICR
+                bmi     FRMERR
                 jsr     DEBPIA
                 bcs     ISR04
                 ; cli                   ; LET IRQS CONTINUE
