@@ -19,6 +19,7 @@
 ;    Recover original cassette-like fiunctions by Dave McMurtrie
 ;
 RVS_TEST        = 1
+EOI_FIX         = 1
 
                 .include "xkim1541.inc"
 
@@ -32,6 +33,7 @@ D2PRA           := $1700        ; PERIPHERAL DATA REGISTER A ON C64
 D2DDRA          := $1701        ; PERIPHERAL DATA DIR REGISTER A ON C64
 D1T2H           := $1704        ; 1T INTERVAL TIMER ON THE 6530
 D64TH           := $1706        ; 64T INTERVAL TIMER ON THE 6530
+CLKRDT          := $1706        ; 6530 INTERVAL READ TIMER 
 D1ICR           := $1707        ; 6530 INTERVAL TIMER STATUS REGISTER
 
                 ; KIM-1 Zero Page locations
@@ -767,6 +769,9 @@ ISRCLK:         jsr     CLKHI           ; CLOCK HI
                 sta     D2PRA
                 dec     COUNT
                 bne     ISR01
+        .if     EOI_FIX = 1
+                lda     CLKRDT          ; CLEAR TIMER INTERRUPT
+        .endif
                 lda     #$10            ; SET TIMER FOR 1MS
                 sta     D64TH
                 ; lda #TIMRB            ; TRIGGER TIMER ; XXX NOT NEEDED ON KIM-1
@@ -866,6 +871,9 @@ ACP00A:         jsr     DEBPIA          ; WAIT FOR CLOCK HIGH
                 bpl     ACP00A
                 ;
 EOIACP:
+        .if     EOI_FIX = 1
+                lda     CLKRDT          ; CLEAR TIMER INTERRUPT
+        .endif
                 lda     #$04            ; SET TIMER 2 FOR 256
                 sta     D64TH
                 ; lda   #TIMRB          ; XXX NOT NEEDED ON KIM-1
