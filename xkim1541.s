@@ -285,7 +285,8 @@ RDIRLIST:       lda     #1              ; Filename length
                 ;
                 lda     FA
                 jsr     TALK
-                jsr     TKATN           ; SA is 0 for dir reading, no need to send it
+                lda     SA
+                jsr     TKSA
                 bit     STATUS          ; Did he listen?
                 bpl     @CONT
                 jmp     ERROR5          ; Nope, device not present
